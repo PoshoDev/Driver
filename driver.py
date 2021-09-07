@@ -15,11 +15,11 @@ def main():
             errors = 0
             
             # Loading Outputs
-            a = GetList("correct"+Ext(i, j))
-            b = GetList(Out(i, j))
+            a, la = GetList("correct"+Ext(i, j))
+            b, lb = GetList(Out(i, j))
             for k in range(len(a)):
                 check = '=' if a[k]==b[k] else 'X'
-                print("| " + a[k] + " | " +check+" | "+ b[k] + " |")
+                print("| " + Spaces(a[k], la) + " | " +check+" | "+ Spaces(b[k], lb) + " |")
                 if (a[k] != b[k]): errors += 1
             print("ERRORS: "+str(errors))
             j += 1
@@ -37,9 +37,18 @@ def Out(i, j):
     
 def GetList(fname):
     l = []
+    biggest = 0
     with open(fname) as f:
         l.append(f.read().splitlines())
-    return l[0]
+        for i in range(len(l[0])):
+            if len(l[0][i]) > biggest:
+                biggest = len(l[0][i])
+    return l[0], biggest
+    
+def Spaces(res, size):
+    for i in range(size-len(res)):
+        res += ' '
+    return res
     
 def RunPython(fname, i, j):
     os.system("python "+fname+".py < "+Inp(i, j)+" > "+Out(i, j))
