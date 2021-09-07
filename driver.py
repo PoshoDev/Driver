@@ -7,24 +7,44 @@ def main():
     i = 1
     fname = mat + str(i) + ".py"
     while os.path.exists(fname):
-        print("Running "+fname+"...")
+        DrawBorder(fname)
         j = 1
         while os.path.exists(Inp(i, j)):
             RunCode(mat, i, j)
-            print("Test Case #"+str(j)+"...")
-            errors = 0
-            
             # Loading Outputs
             a, la = GetList("correct"+Ext(i, j))
-            b, lb = GetList(Out(i, j))
-            for k in range(len(a)):
+            b, lb = GetList(Out(i, j))            
+            DrawHeader(la, lb, j)
+            errors = 0
+            total = len(a)
+            for k in range(total):
                 check = '=' if a[k]==b[k] else 'X'
-                print("| " + Spaces(a[k], la) + " | " +check+" | "+ Spaces(b[k], lb) + " |")
+                DrawInner(a[k], b[k], la, lb, check)
                 if (a[k] != b[k]): errors += 1
-            print("ERRORS: "+str(errors))
+            DrawBottom(la, lb, errors, total)
             j += 1
         i += 1
         fname = mat + str(i) + ".py"
+        
+def DrawHeader(la, lb, j):
+    print('┌' + '─'*(la+lb+9) + '┐')
+    print("│ " + Spaces("Case #"+str(j), la+lb+7) + " │")
+    print('├──' + '─'*la + "┬───┬" + '─'*lb + '──┤')
+    
+def DrawInner(inpa, inpb, la, lb, check):
+    print("│ " + Spaces(inpa, la) + " │ " +check+" │ "+ Spaces(inpb, lb) + " │")
+    
+def DrawBottom(la, lb, errors, total):
+    print('├──' + '─'*la + "┴───┴" + '─'*lb + '──┤')
+    print("│ " + Spaces("SCORE:", la+lb+7) + " │")
+    print("│ " + Spaces(str(total-errors)+" / "+str(total), la+lb+7) + " │")
+    print('└' + '─'*(la+lb+9) + '┘')
+    
+def DrawBorder(text):
+    print("")
+    print('╔══' + '═'*(len(text)) + '══╗')
+    print("║  " + text + "  ║")
+    print('╚══' + '═'*(len(text)) + '══╝')
 
 def Ext(i, j):
     return "_"+str(i)+"_"+str(j)+".txt"
