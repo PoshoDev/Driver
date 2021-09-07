@@ -1,4 +1,4 @@
-import os, subprocess
+import os, subprocess, time
 
 mat = "601341p"
 
@@ -10,7 +10,7 @@ def main():
         DrawBorder(fname)
         j = 1
         while os.path.exists(Inp(i, j)):
-            RunCode(mat, i, j)
+            exectime = RunCode(mat, i, j)
             # Loading Outputs
             a, la = GetList("correct"+Ext(i, j))
             b, lb = GetList(Out(i, j))            
@@ -21,7 +21,7 @@ def main():
                 check = '=' if a[k]==b[k] else 'X'
                 DrawInner(a[k], b[k], la, lb, check)
                 if (a[k] != b[k]): errors += 1
-            DrawBottom(la, lb, errors, total)
+            DrawBottom(la, lb, errors, total, exectime)
             j += 1
         i += 1
         fname = mat + str(i) + ".py"
@@ -34,10 +34,13 @@ def DrawHeader(la, lb, j):
 def DrawInner(inpa, inpb, la, lb, check):
     print("│ " + Spaces(inpa, la) + " │ " +check+" │ "+ Spaces(inpb, lb) + " │")
     
-def DrawBottom(la, lb, errors, total):
+def DrawBottom(la, lb, errors, total, exectime):
     print('├──' + '─'*la + "┴───┴" + '─'*lb + '──┤')
     print("│ " + Spaces("SCORE:", la+lb+7) + " │")
     print("│ " + Spaces(str(total-errors)+" / "+str(total), la+lb+7) + " │")
+    print('├' + '─'*(la+lb+9) + '┤')
+    print("│ " + Spaces("TIME:", la+lb+7) + " │")
+    print("│ " + Spaces(exectime, la+lb+7) + " │")
     print('└' + '─'*(la+lb+9) + '┘')
     
 def DrawBorder(text):
@@ -71,7 +74,9 @@ def Spaces(res, size):
     return res
     
 def RunPython(fname, i, j):
+    start_time = time.time()
     os.system("python "+fname+".py < "+Inp(i, j)+" > "+Out(i, j))
+    return "%.2f" % (time.time() - start_time) + " sec."
 
 def RunCpp(fname):
     return
@@ -86,16 +91,16 @@ def LookFor(name, ext):
 
 def RunCode(mat, i, j):
     name = mat + str(i)
-    if LookFor(mat, ".py"):
-        RunPython(name, i, j)
-        return True
-    elif LookFor(mat, ".cpp"):
-        RunCpp(name, i, j)
-        return True
-    elif LookFor(mat, ".java"):
-        RunJava(name, i, j)
-        return True
-    return False
+    if LookFor(name, ".py"):
+        exectime = RunPython(name, i, j)
+        return exectime
+    elif LookFor(name, ".cpp"):
+        exectime = RunCpp(name, i, j)
+        return exectime
+    elif LookFor(name, ".java"):
+        exectime = RunJava(name, i, j)
+        return exectime
+    return ""
         
 if __name__ == "__main__":
     main()
