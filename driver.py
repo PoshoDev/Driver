@@ -3,7 +3,7 @@ import os, subprocess, time
 mat = "601341p"
 
 def main():
-    print("Loading programs for "+mat+"...")
+    DrawBorder("Loading programs for "+mat+"...")
     i = 1
     fname = mat + str(i) + ".py"
     while os.path.exists(fname):
@@ -76,13 +76,19 @@ def Spaces(res, size):
 def RunPython(fname, i, j):
     start_time = time.time()
     os.system("python "+fname+".py < "+Inp(i, j)+" > "+Out(i, j))
-    return "%.2f" % (time.time() - start_time) + " sec."
+    return GetTime(start_time)
 
 def RunCpp(fname):
     return
 
-def RunJava(fname):
-    return
+def RunJava(fname):    
+    os.system("javac "+fname+".java")
+    start_time = time.time()
+    os.system("java "+fname+" < "+Inp(i, j)+" > "+Out(i, j))
+    return GetTime(start_time)
+    
+def GetTime(start_time):
+    return "%.2f" % (time.time() - start_time) + " sec."
 
 def LookFor(name, ext):
     if os.path.exists(name + ext):
