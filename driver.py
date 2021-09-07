@@ -2,6 +2,30 @@ import os, subprocess
 
 mat = "601341p"
 
+def main():
+    print("Loading programs for "+mat+"...")
+    i = 1
+    fname = mat + str(i) + ".py"
+    while os.path.exists(fname):
+        print("Running "+fname+"...")
+        j = 1
+        while os.path.exists(Inp(i, j)):
+            RunCode(mat, i, j)
+            print("Test Case #"+str(j)+"...")
+            errors = 0
+            
+            # Loading Outputs
+            a = GetList("correct"+Ext(i, j))
+            b = GetList(Out(i, j))
+            for k in range(len(a)):
+                check = '=' if a[k]==b[k] else 'X'
+                print("| " + a[k] + " | " +check+" | "+ b[k] + " |")
+                if (a[k] != b[k]): errors += 1
+            print("ERRORS: "+str(errors))
+            j += 1
+        i += 1
+        fname = mat + str(i) + ".py"
+
 def Ext(i, j):
     return "_"+str(i)+"_"+str(j)+".txt"
 
@@ -44,34 +68,5 @@ def RunCode(mat, i, j):
         return True
     return False
         
-
-
-
-print("Loading your programs...")
-
-i = 1
-fname = mat + str(i) + ".py"
-while os.path.exists(fname):
-    print("Running "+fname+"...")
-    j = 1
-    while os.path.exists(Inp(i, j)):
-        RunCode(mat, i, j)
-        print("Test Case #"+str(j)+"...")
-        
-        errors = 0
-        
-        # Loading Outputs
-        a = GetList("correct"+Ext(i, j))
-        b = GetList(Out(i, j))
-            
-        for k in range(len(a)):
-            check = '=' if a[k]==b[k] else 'X'
-            print("| " + a[k] + " | " +check+" | "+ b[k] + " |")
-            if (a[k] != b[k]): errors += 1
-        
-        print("ERRORS: "+str(errors))
-        
-        
-        j += 1
-    i += 1
-    fname = mat + str(i) + ".py"
+if __name__ == "__main__":
+    main()
